@@ -26,7 +26,7 @@
 
 zero-shot 方面，Table 1 只写"accuracy (%)"。Llama-2-7B 基线在纯 `acc` 下均值 59.09，与论文 65.05 差 6 个点；OBQA、ARC-c、HellaSwag 换成 `acc_norm` 后六项全部落在论文 ±0.5 以内（这也是 Palu 表格的口径）。
 
-注意 Table 1 第三块的 "LLaMA-3-8B-Inst" 是 Llama-3，不是 3.1；Llama-3.1-8B-Instruct 的 zero-shot 基线在附录 Table 8（均值 68.84），论文没有它的 PPL。Llama-3-8B-Instruct 只在定协议时跑过一次（数据在 `results/exp1_table1_sweep_20260907/`），不属于本课题的研究模型。
+注意 Table 1 第三块的 "LLaMA-3-8B-Inst" 是 Llama-3，不是 3.1；Llama-3.1-8B-Instruct 的 zero-shot 基线在附录 Table 8（均值 68.84），论文没有它的 PPL。Llama-3-8B-Instruct 只在定协议时跑过一次（原始输出已清理，数字如上表），不属于本课题的研究模型。
 
 ## 固定设置下的结果
 

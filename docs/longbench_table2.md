@@ -48,7 +48,7 @@ Llama-3.1-8B-Instruct 未压缩基线，`GPUS=4,5,6,7 bash scripts/table2_longbe
 
 ### Qasper 的排查
 
-在 lm-eval 流水线上试了能想到的变体（`results/verify/lb_qasper_diag/`）：
+在 lm-eval 流水线上试了能想到的变体（原始预测记录已清理，分数如下）：
 
 | Qasper 变体 | F1 |
 |---|---|

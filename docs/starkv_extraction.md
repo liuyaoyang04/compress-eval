@@ -41,9 +41,9 @@ STAR-KV 路径本身的数值没有改变：同样的补零，同样的 fp32 `de
 
 ## 真实模型验证（2026-09-06，H800 80 GB，`.venv-starkv`）
 
-原始输出在 `results/verify/`（不进版本库）。模型副本和 checkpoint 来自本地已有目录。
+原始输出已清理。模型副本和 checkpoint 来自本地已有目录。
 
-**测试。** `pytest tests` 全部通过（26 个）：transformers 5.9.0 下（`.venv-starkv`（之前代码库的环境），即下面各项运行所用的环境，以及 `scripts/setup_env.sh` 构建的仓库自带 `.venv`）和 4.51.1 下（`../本仓库/.venv-eval`）。覆盖内容：核函数与 fp32 参考在 head_dim 64/128/256、GQA 与 MHA、fp16 与 bf16、带位置偏移下的对比；逐 head 动态秩与补零满秩逐位一致；与上游 STAR-KV 核函数逐位一致；用单位因子在 fp32 下 latent 路径与原模型对比（一次性 prefill、带 cache 的贪心 decode、分块 prefill、三行左 padding 的批次）；bf16/fp16 下 triton/torch/sdpa 在各 head 秩不等时的一致性；legacy 转换与上游 `fuse_and_prune` 的对比。
+**测试。** `pytest tests` 全部通过（当时 26 个，评测协议钉子加入后为 38 个）：transformers 5.9.0 下（`.venv-starkv`（之前代码库的环境），即下面各项运行所用的环境，以及 `scripts/setup_env.sh` 构建的仓库自带 `.venv`）和 4.51.1 下（`../本仓库/.venv-eval`）。覆盖内容：核函数与 fp32 参考在 head_dim 64/128/256、GQA 与 MHA、fp16 与 bf16、带位置偏移下的对比；逐 head 动态秩与补零满秩逐位一致；与上游 STAR-KV 核函数逐位一致；用单位因子在 fp32 下 latent 路径与原模型对比（一次性 prefill、带 cache 的贪心 decode、分块 prefill、三行左 padding 的批次）；bf16/fp16 下 triton/torch/sdpa 在各 head 秩不等时的一致性；legacy 转换与上游 `fuse_and_prune` 的对比。
 
 **36.62 checkpoint**（`starkv_llama31_comp60/trained_weights.pt`，legacy 格式，Llama-3.1-8B-Instruct）。`torch.load` 之后转换只需约 3 秒 CPU 时间；29 个压缩层，各 head 的 K 秩见 `lrkv.compression` 打印的表，KV 压缩率 49.2%（padded）/ 58.4%（compact），U 的跨 head 能量 2.1e-3。
 
@@ -55,7 +55,7 @@ STAR-KV 路径本身的数值没有改变：同样的补零，同样的 fp32 `de
 | 同上，每行 top-1 一致率 | | triton 1.00 / 0.98 / 0.96，torch 1.00 / 1.00 / 0.98，sdpa 1.00 / 1.00 / 0.96 |
 | LongBench smoke，lm-eval 0.4.12，batch 4，31500，前 8 例：qasper / trec | 16.54 / 50.0 | 17.15 / 50.0，`triton`（batch 4，带左 padding） |
 | zero-shot smoke，前 64 例：piqa / arc_easy 准确率 | 0.781 / 0.750 | |
-| `scripts/eval_sharded.sh`（当时名为 eval_longbench_sharded.sh），multi_news / trec，4 例 | 17.61 / 75.0（汇总已写出） | |
+| `scripts/eval_sharded.sh`，multi_news / trec，4 例 | 17.61 / 75.0（汇总已写出） | |
 
 自由生成的贪心解码在三个 prompt 中的两个上，各 latent 模式都在第 23 到 39 步与参考路径分叉（近似平局的翻转；上面 teacher-forced 的行才反映真实的数值偏差）。完整的七任务 36.62 复现这次没有重跑（需要数小时 GPU 时间），协议对应分片脚本的 `TASKS=star-paper-7`。
 

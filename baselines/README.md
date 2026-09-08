@@ -67,20 +67,18 @@ resolves (`train.py`, `eval.py`, `latency.py`, `model.py`,
 `LlamaLoRaAttention_headwise.py`, `abx_rope_batched.py`, `soft_thres_layer.py`,
 `check_compression.py`); only `bx_quant.py` and
 `LlamaLoRaAttention_headwise_quant.py` import the missing `quant_utils` and
-`abx_rope_batched_quant`. Verified by running, all under `.venv-starkv`:
+`abx_rope_batched_quant`. Verified by running in a transformers 5.9 environment:
 
 - `abx_rope_batched.py --check` passes for GQA (32/8 heads) and MHA (32 heads).
-- `eval.py --triton --ppl` on a synthetic fused checkpoint runs end to end
-  (`results/throughput/starkv_official_latency/` has the checkpoint recipe).
+- `eval.py --triton --ppl` on a synthetic fused checkpoint runs end to end.
 - `model.generate(..., use_cache=True)` on the exported model calls the Triton
   kernel once per compressed layer per decode step and produces the same
   tokens as the `no_triton` path.
-- `latency.py --mode e2e` and `--mode layerwise` run (results in
-  `results/throughput/starkv_official_latency/`).
+- `latency.py --mode e2e` and `--mode layerwise` run.
 - `train.py` streams a local FineWeb-Edu parquet directory when passed as
   `--dataset <dir> --dataset-config default`; a 24-step smoke run on
   Llama-2-7B produced a fused checkpoint that `check_compression.py` and
-  `eval.py --triton` accept (see `docs/starkv_inference_latency_2026-09-02.md`).
+  `eval.py --triton` accept.
 
 Caveats found while doing this:
 
@@ -90,8 +88,13 @@ Caveats found while doing this:
   LongBench and RULER through `eval.py` do use the cache and the Triton decode;
   a plain `model.generate()` on the same object silently recomputes the whole
   sequence every step and never touches the kernel.
+- `eval.py --ruler` builds a bare `TaskManager()`, so lm-eval's RULER tasks get no
+  tokenizer metadata and fail to load; this repository passes the metadata
+  (`evals/ruler.py`).
+- `eval.py --longbench` hard-codes 11 tasks that do not include multifieldqa_en,
+  so the paper's seven-task LongBench average cannot be produced from it unmodified.
 - `train.py`, `eval.py` and `latency.py` overwrite `CUDA_VISIBLE_DEVICES` with
-  `--cuda-devices` (default `0` or `0,1`); pass GPUs 2 to 7 explicitly.
+  `--cuda-devices` (default `0` or `0,1`).
 - The `abx_rope_batched.py` benchmark path (no `--check`) builds a 3-D query
   tensor and trips the kernel's `a.dim() == 4` assertion; only `--check` runs.
 - `check_compression.py` defaults to 8 KV heads and skip layers 0/1/2/31
@@ -99,12 +102,11 @@ Caveats found while doing this:
 - `train.py` defaults to `--skip-layers 0 1 2 31` while `eval.py` and
   `latency.py` default to `0 1 31`; the loader infers skip layers from the
   checkpoint, so the mismatch is harmless at load time.
+- `eval.py` loads the baseline model without `torch_dtype`, i.e. fp32 under
+  transformers 4.x and the checkpoint dtype (bf16) under 5.x; measured on
+  Llama-3.1 LongBench qasper/trec the two differ by < 0.6 points.
 - No trained weights are released (README TODO still open) and there is no
   Table 5 (throughput) script.
-- `.venv-starkv` needs `matplotlib`, `pandas` (installed 2026-09-02) and the
-  `.venv-eval/.../site-packages/.machine-deps` path for `jinja2`, which
-  `lm_eval.models.huggingface` imports; the second line in
-  `.venv-starkv/lib/python3.10/site-packages/_venv_eval.pth` adds it.
 
 ## Palu: quantization in the paper and in the code
 

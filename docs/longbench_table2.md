@@ -6,7 +6,7 @@
 
 | 项目 | 取值 | 代码位置 |
 |---|---|---|
-| 任务 | Qasper、QMSum、TriviaQA、MultiQA（= MultiFieldQA-en）、TREC、MultiNews、VCSum，七任务等权平均 | `evals/harness.py::LONGBENCH_PRESETS["star-paper-7"]` |
+| 任务 | Qasper、QMSum、TriviaQA、MultiQA（= MultiFieldQA-en）、TREC、MultiNews、VCSum，七任务等权平均 | `evals/harness.py::LONGBENCH_PAPER_TASKS` |
 | 框架 | STAR-KV `eval.py --longbench` 调 lm-eval 的 `longbench_*` 任务：数据集 `Xnhyacinth/LongBench`，官方判分函数（F1 / ROUGE-L / ROUGE-L-zh / 分类），官方生成上限（128 / 512 / 32 / 64 / 64 / 512 / 512） | lm-eval 0.4.12 `tasks/longbench/` |
 | 模型调用 | `add_bos_token=False`、无 chat template、batch 4、`max_length` 31500、贪心 | `evals/run.py --longbench` |
 | 截断 | lm-eval 只保留末尾 `31500 − 生成上限` 个 token；官方 LongBench 是掐中间。七任务 1350 条里只有 1 条 vcsum 超过 31500，所以两者在这个长度下没有区别 | |
@@ -19,7 +19,7 @@
 
 ## lm-eval 0.4.12 的 LongBench 提示词与官方不一致
 
-`Xnhyacinth/LongBench` 这个镜像把官方数据的 `input` 拆成了 `question` 和 `answer_prefix`，并且 `context` 字段里已经拼进了官方的指令语；lm-eval 的 `doc_to_text` 模板又把指令语和 "Question:" 再包一层，`answer_prefix` 则没有用。用本机的官方 `THUDM/LongBench` `data.zip` 逐条对比，七个任务 1350 条样本的差异：
+`Xnhyacinth/LongBench` 这个镜像把官方数据的 `input` 拆成了 `question` 和 `answer_prefix`，并且 `context` 字段里已经拼进了官方的指令语；lm-eval 的 `doc_to_text` 模板又把指令语和 "Question:" 再包一层，`answer_prefix` 则没有用。用官方 `THUDM/LongBench` 的 `data.zip` 逐条对比，七个任务 1350 条样本的差异：
 
 | 任务 | 指令语出现两次 | "Question: Question:" / "Query: Query:" | 结尾缺少官方答案前缀 |
 |---|---|---|---|
@@ -35,7 +35,7 @@
 
 ## 结果
 
-Llama-3.1-8B-Instruct 未压缩基线，`GPUS=4,5,6,7 bash scripts/table2_longbench.sh`（内部按 qmsum | multi_news | vcsum+triviaqa | 其余三个 QA 分四卡，qmsum 单卡 43 分钟最慢）。原始 JSON 和日志在 `results/longbench_table2/llama31_8b_instruct_baseline/`。
+Llama-3.1-8B-Instruct 未压缩基线，`GPUS=4,5,6,7 bash scripts/table2_longbench.sh`（内部按 qmsum | multi_news | vcsum+triviaqa | 其余三个 QA 分四卡，qmsum 单卡 43 分钟最慢）。原始 JSON 和日志在 `results/table2/llama31_8b_instruct_baseline/`。
 
 | | Qasper | QMSum | TriviaQA | MultiQA | TREC | MultiNews | VCSum | Avg |
 |---|---|---|---|---|---|---|---|---|

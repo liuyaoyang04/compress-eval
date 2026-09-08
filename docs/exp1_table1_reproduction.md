@@ -30,7 +30,7 @@ zero-shot 方面，Table 1 只写"accuracy (%)"。Llama-2-7B 基线在纯 `acc` 
 
 ## 固定设置下的结果
 
-`GPUS=2,3 bash scripts/table1_ppl_zeroshot.sh`（当时名为 exp1_table1.sh），单模型约 4 分钟（一张 H800）。
+`GPUS=2,3 bash scripts/table1_ppl_zeroshot.sh`，单模型约 4 分钟（一张 H800）。
 
 | 模型 | Wiki2 | C4 | OBQA | PIQA | ARC-e | ARC-c | Hella | Wino | Avg |
 |---|---|---|---|---|---|---|---|---|---|
@@ -47,4 +47,4 @@ lm-eval 的标准误：OBQA 2.2、ARC-c 1.5、Wino 1.3、PIQA 1.0、ARC-e 0.9、
 
 ## 附：本地 STAR-KV checkpoint
 
-驱动脚本加 `CHECKPOINT=<ckpt> GPUS=2,3,4` 会在 Llama-3.1 上多跑一个压缩模型。用 36.62 那个 checkpoint（`best_kv_svd/starkv_models/starkv_llama31_comp60/trained_weights.pt`）测过一次：Wiki2 10.33、C4 16.19、zero-shot 均值 62.04，比 Table 8 的 STAR-KV 60%（66.43）低 4.4 个点。论文没有公开权重，这只说明本地训出来的 checkpoint 没达到论文水平，与评测代码无关。
+驱动脚本加 `CHECKPOINT=<ckpt> GPUS=2,3,4` 会在 Llama-3.1 上多跑一个压缩模型。用本地那个 36.62 的 STAR-KV checkpoint（见 `baselines/README.md`）测过一次：Wiki2 10.33、C4 16.19、zero-shot 均值 62.04，比 Table 8 的 STAR-KV 60%（66.43）低 4.4 个点。论文没有公开权重，这只说明本地训出来的 checkpoint 没达到论文水平，与评测代码无关。

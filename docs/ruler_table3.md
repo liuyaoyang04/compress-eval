@@ -41,7 +41,7 @@ python -m evals.compare results/table3/<NAME> --paper llama31_8b_instruct
 
 ## 结果
 
-Llama-3.1-8B-Instruct 未压缩基线，`SUITE=ruler GPUS=2,3,4,5,6,7 bash scripts/eval_sharded.sh`，最长分片 23 分钟。原始 JSON 和日志在 `results/ruler_table3/llama31_8b_instruct_baseline/`。
+Llama-3.1-8B-Instruct 未压缩基线，`GPUS=2,3,4,5,6,7 bash scripts/table3_ruler.sh`，最长分片 23 分钟。原始 JSON 和日志在 `results/table3/llama31_8b_instruct_baseline/`。
 
 | | MK1 | MK2 | MQ | MV | S1 | S2 | S3 | FWE | SQ | Avg |
 |---|---|---|---|---|---|---|---|---|---|---|

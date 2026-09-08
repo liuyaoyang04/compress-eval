@@ -1,0 +1,8 @@
+[submodule "baselines/STAR-KV"]
+	path = baselines/STAR-KV
+	url = https://github.com/PriyanshBhatnagar/STAR-KV
+	ignore = untracked
+[submodule "baselines/Palu"]
+	path = baselines/Palu
+	url = https://github.com/shadowpa0327/Palu
+	ignore = untracked

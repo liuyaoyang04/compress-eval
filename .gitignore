@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv*
+*.egg-info/
+build/
+dist/
+
+models/
+checkpoints/
+data/
+results/
+*.log
+*.tmp
+*.pt
+*.safetensors
+
+.uv-cache/
+
+# host-specific working notes
+AGENTS.md

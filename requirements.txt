@@ -1,0 +1,24 @@
+# Core pins reproduce the environment the framework was verified on (Python 3.10, CUDA 12.1,
+# H800). Install with scripts/setup_env.sh (uv) or:
+#   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+#   pip install -r requirements.txt
+# requirements.lock.txt is the exact resolved set (uv pip freeze) of the last successful build.
+torch==2.5.1
+triton==3.1.0
+transformers==5.9.0
+tokenizers==0.22.2
+huggingface_hub==1.29.0
+safetensors==0.7.0
+accelerate==1.13.0
+datasets==2.19.2
+numpy==1.26.4
+pyarrow==25.0.1
+lm_eval[longbench,ruler]==0.4.12
+evaluate==0.4.6
+sentencepiece==0.2.1
+tiktoken
+tqdm
+psutil
+setuptools           # triton's runtime imports it; uv venvs do not ship it
+# tests / tooling
+pytest==8.3.5

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "compress-eval"
+version = "0.1.0"
+description = "Latent (low-rank) KV-cache inference framework and evaluation harness"
+requires-python = ">=3.10"
+dependencies = ["torch", "triton", "transformers", "datasets", "accelerate", "tqdm"]
+
+[project.optional-dependencies]
+eval = ["lm_eval[longbench,ruler]==0.4.12", "sentencepiece", "tiktoken"]
+test = ["pytest>=8"]
+
+[tool.setuptools]
+packages = ["lrkv", "lrkv.kernels", "evals"]

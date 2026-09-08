@@ -50,7 +50,7 @@ $PY -m evals.summarize results/table2/my_method --preset star-paper-7
 | RULER | 九任务 @4096，每任务 500 条，按 lm-eval `ruler` 组顺序合成样本，与分片方式无关 | `evals/ruler.py` |
 | 模型调用 | bf16、sdpa、`add_bos_token=False`、无 chat template、贪心 | `lrkv/model.py`、`evals/harness.py` |
 
-这些设置都由 `tests/test_evals.py` 钉住（窗口、指标口径、任务集、默认参数、数据表、lm-eval 侧模板与判分的哈希）。Llama-3.1-8B-Instruct 基线的复现情况：Table 1 困惑度精确一致，zero-shot 均值差 0.1，RULER 九项差 0.9 内，LongBench 六项差 1.5 内但 Qasper 高 8.7（论文值无法复现）。做方法对比请以本框架自己跑出的基线为参照。细节见 `docs/exp1_table1_reproduction.md`、`docs/longbench_table2.md`、`docs/ruler_table3.md`。
+这些设置都由 `tests/test_evals.py` 钉住（窗口、指标口径、任务集、默认参数、数据表、lm-eval 侧模板与判分的哈希）。Llama-3.1-8B-Instruct 基线的复现情况：Table 1 困惑度精确一致，zero-shot 均值差 0.1，RULER 九项差 0.9 内，LongBench 六项差 1.5 内但 Qasper 高 8.7（论文值无法复现）。做方法对比请以本框架自己跑出的基线为参照。完整的基线数字见 `docs/full_model_results.md`，细节见 `docs/exp1_table1_reproduction.md`、`docs/longbench_table2.md`、`docs/ruler_table3.md`。
 
 ## 数据是怎么固定的
 
